@@ -84,11 +84,13 @@ pipeline {
 	stages {
 		stage('Checkout SCM') {
 			steps {
-				git '/home/JenkinsDependencyCheckTest'
-			}
+                echo "Cloning repository..."
+                checkout scm
+                echo "Cloned."
+            }
 		}
 
-		stage('OWASP DependencyCheck') {
+		stage('OWASP Dependency-Check Vulnerabilities') {
 			steps {
 				dependencyCheck additionalArguments: '--format HTML --format XML', odcInstallation: 'Default'
 			}
