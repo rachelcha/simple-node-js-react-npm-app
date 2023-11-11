@@ -4,13 +4,13 @@ services:
     container_name: nginxwebsvr
     ports:
       - "80:80"
-mysqldb:
-  image: mysql:5.7
-  restart: always
-  volumes:
-  - ./mysql_data:/var/lib/mysql
-  environment:
-    MYSQL_ROOT_PASSWORD: pass
-    MYSQL_DATABASE: testdb
-    MYSQL_USER: user
-    MYSQL_PASSWORD: pass
+  mysqldb:
+    image: mysql:5.7
+    restart: always
+    volumes:
+    - ./mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
