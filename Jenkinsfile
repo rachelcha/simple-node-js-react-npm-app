@@ -37,20 +37,20 @@
 //     }
 // }
 
+
 // pipeline {
-//     agent any
-    
-//     stages {
-//         stage('Checkout SCM') {
-//             steps {
+// 	agent any
+// 	stages {
+// 		stage('Checkout SCM') {
+// 			steps {
 //                 echo "Cloning repository..."
 //                 checkout scm
 //                 echo "Cloned."
 //             }
-//         }
+// 		}
 
-//         stage('OWASP Dependency-Check Vulnerabilities') {
-//             steps {
+// 		stage('OWASP Dependency-Check Vulnerabilities') {
+// 			steps {
 //                 dependencyCheck additionalArguments: ''' 
 //                             -o './'
 //                             -s './'
@@ -59,20 +59,9 @@
                 
 //                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
 //             }
-//             }
-        
-
-//         // stage('Build Server Docker Image') { 
-//         //     steps {
-//         //         dir('server') {
-//         //             script {
-//         //                 dockerImage = docker.build("myapp-server", "./server")
-//         //             }
-//         //         }
-//         //     }
-//         // }
-//     }
-//     post {
+// 		}
+// 	}	
+// 	post {
 // 		success {
 // 			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
 // 		}
@@ -80,31 +69,29 @@
 // }
 
 pipeline {
-	agent any
-	stages {
-		stage('Checkout SCM') {
-			steps {
-                echo "Cloning repository..."
-                checkout scm
-                echo "Cloned."
+    agent any
+        stages {
+            stage ('Checkout') {
+                steps {
+                    git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-
+                    Application.git'
+                        }
             }
-		}
-
-		stage('OWASP Dependency-Check Vulnerabilities') {
-			steps {
-                dependencyCheck additionalArguments: ''' 
-                            -o './'
-                            -s './'
-                            -f 'ALL' 
-                            --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-                
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            stage('Code Quality Check via SonarQube') {
+                steps {
+                    script {
+                        def scannerHome = tool 'SonarQube';
+                        withSonarQubeEnv('SonarQube') {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP -
+                        Dsonar.sources=."
+                        }
+                    }
+                }
             }
-		}
-	}	
-	post {
-		success {
-			dependencyCheckPublisher pattern: 'dependency-check-report.xml'
-		}
-	}
+        }
+        post {
+            always {
+                recordIssues enabledForFailure: true, tool: sonarQube()
+            }
+        }
 }
