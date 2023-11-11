@@ -1,6 +1,6 @@
 services:
   nginxwebsvr:
-  image: nginx:alpine
-  container_name: nginxwebsvr
-  ports:
-  - "80:80"
+    image: nginx:alpine
+    container_name: nginxwebsvr
+    ports:
+    - "80:80"
