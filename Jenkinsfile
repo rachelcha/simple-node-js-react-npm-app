@@ -76,12 +76,18 @@ pipeline {
                     git branch:'master', url: 'https://github.com/OWASP/Vulnerable-Web-Application.git'
                     }
             }
-            stage('Code Quality Check via SonarQube') {
+            stage('SonarQube Analysis') {
                 steps {
                     script {
                         def scannerHome = tool 'SonarQube';
                         withSonarQubeEnv('SonarQube') {
-                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=OWASP - Dsonar.sources=."
+                            sh """
+                                ${scannerHome}/bin/sonar-scanner \
+                                -Dsonar.projectKey=OWASP \
+                                -Dsonar.sources=. \
+                                -Dsonar.host.url=http:172.18.0.3:9000 \
+                                -Dsonar.token=sqp_e7930410a30c64a8e0b952d9c2ed2c592df6c662
+                            """
                         }
                     }
                 }
