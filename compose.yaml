@@ -4,5 +4,3 @@ image: nginx:alpine
 container_name: nginxwebsvr
 ports:
 - "80:80"
-mysqldb:
-image: mysql:5.7
